@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Gemini Tetris - 俄罗斯方块游戏</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="game-header">
+        <h1>🎮 Gemini Tetris</h1>
+        <div class="controls-hint">
+            <p>⬅️➡️ 移动 | ⬆️ 旋转 | ⬇️ 加速</p>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <div class="game-board-container">
+            <div class="game-board"></div>
+            <div class="game-overlay" id="game-overlay">
+                <div class="overlay-content">
+                    <h2 id="overlay-title">准备开始</h2>
+                    <p id="overlay-message">点击开始按钮开始游戏</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-info">
+            <div class="info-section">
+                <h2>得分</h2>
+                <div class="score-display" id="score">0</div>
+            </div>
+
+            <div class="info-section">
+                <h2>等级</h2>
+                <div class="level-display" id="level">1</div>
+            </div>
+
+            <div class="info-section">
+                <h2>消除行数</h2>
+                <div class="lines-display" id="lines">0</div>
+            </div>
+
+            <div class="info-section">
+                <h2>最高分</h2>
+                <div class="highscore-display" id="highscore">0</div>
+            </div>
+
+            <div class="info-section">
+                <h2>下一个</h2>
+                <div class="next-piece"></div>
+            </div>
+
+            <div class="game-controls">
+                <button id="start-button" class="control-btn primary">开始游戏</button>
+                <button id="pause-button" class="control-btn" disabled>暂停</button>
+                <button id="restart-button" class="control-btn">重新开始</button>
+            </div>
+
+            <div class="info-section">
+                <h2>控制说明</h2>
+                <div class="controls-guide">
+                    <div class="control-item">
+                        <span class="key">⬅️</span>
+                        <span class="action">向左移动</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key">➡️</span>
+                        <span class="action">向右移动</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key">⬆️</span>
+                        <span class="action">旋转方块</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key">⬇️</span>
+                        <span class="action">加速下落</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key">空格</span>
+                        <span class="action">暂停/继续</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 移动端触摸控制 -->
+    <div class="mobile-controls" id="mobile-controls">
+        <div class="touch-controls">
+            <div class="control-row">
+                <button class="touch-btn" id="touch-rotate">⟲</button>
+            </div>
+            <div class="control-row">
+                <button class="touch-btn" id="touch-left">⬅️</button>
+                <button class="touch-btn" id="touch-down">⬇️</button>
+                <button class="touch-btn" id="touch-right">➡️</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
