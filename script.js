@@ -7,11 +7,13 @@ class TetrisGame {
   constructor() {
     this.initializeElements();
     this.initializeConstants();
+    // 先初始化highScore为0，然后再加载存储的值
+    this.highScore = 0;
     this.initializeGameState();
     this.initializeBoard();
     this.initializeNextPieceDisplay();
     this.bindEvents();
-    this.loadHighScore();
+    this.loadHighScore(); // 这里会覆盖上面的默认值
     this.updateDisplay();
     this.detectMobile();
   }
@@ -210,7 +212,8 @@ class TetrisGame {
     this.score = 0;
     this.level = 1;
     this.lines = 0;
-    this.highScore = 0;
+    // 不要重置highScore，保持历史最高分
+    // this.highScore = 0; // 移除这行，避免清零历史最高分
     this.fallTimer = null;
     this.fallTime = this.BASE_FALL_TIME;
 
@@ -531,25 +534,35 @@ class TetrisGame {
     }
 
     if (completedLines.length > 0) {
-      // 播放消行动画
-      this.animateLineClears(completedLines);
+      // 先播放消行动画，动画完成后再执行实际删除
+      this.animateLineClears(completedLines, () => {
+        // 移除完整行 - 从高索引到低索引删除，避免索引偏移
+        // 由于completedLines是从下往上扫描得到的，已经是降序排列
+        // 但为了确保安全，我们显式排序
+        completedLines.sort((a, b) => b - a); // 降序排列
 
-      // 移除完整行
-      completedLines.forEach((lineY) => {
-        this.board.splice(lineY, 1);
-        this.board.unshift(Array(this.BOARD_WIDTH).fill(0));
+        // 先批量删除所有完整行，避免在同一循环中插入导致索引再次变化
+        completedLines.forEach((lineY) => {
+          this.board.splice(lineY, 1);
+        });
+
+        // 统一在顶部补充相同数量的空行
+        for (let i = 0; i < completedLines.length; i++) {
+          this.board.unshift(Array(this.BOARD_WIDTH).fill(0));
+        }
+
+        // 更新UI
+        this.updateBoardDisplay();
+
+        // 更新得分和等级
+        this.updateScore(completedLines.length);
+        this.updateLevel();
       });
-
-      // 更新UI
-      this.updateBoardDisplay();
-
-      // 更新得分和等级
-      this.updateScore(completedLines.length);
-      this.updateLevel();
     }
   }
 
-  animateLineClears(lines) {
+  animateLineClears(lines, callback) {
+    // 为要消除的行添加动画效果
     lines.forEach((lineY) => {
       for (let x = 0; x < this.BOARD_WIDTH; x++) {
         const index = lineY * this.BOARD_WIDTH + x;
@@ -557,15 +570,21 @@ class TetrisGame {
       }
     });
 
-    // 移除动画类
+    // 动画持续时间后执行回调
     setTimeout(() => {
+      // 先移除动画类
       lines.forEach((lineY) => {
         for (let x = 0; x < this.BOARD_WIDTH; x++) {
           const index = lineY * this.BOARD_WIDTH + x;
           this.squares[index].classList.remove("line-complete");
         }
       });
-    }, 500);
+      
+      // 执行回调函数（实际删除行和更新显示）
+      if (callback && typeof callback === 'function') {
+        callback();
+      }
+    }, 300); // 减少动画时间，提升游戏体验
   }
 
   updateBoardDisplay() {

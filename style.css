@@ -66,6 +66,8 @@ body {
     align-items: flex-start;
     justify-content: center;
     flex-wrap: wrap;
+    width: 100%;
+    min-height: 0;
 }
 
 .game-board-container {
@@ -125,8 +127,10 @@ body {
     border-radius: 12px;
     padding: 1.5rem;
     min-width: 280px;
+    max-width: 320px;
     box-shadow: var(--shadow-lg);
     border: 1px solid var(--border-color);
+    flex-shrink: 0;
 }
 
 .info-section {
@@ -419,6 +423,7 @@ body {
     transform: translateX(-50%);
     display: none;
     z-index: 1000;
+    max-width: calc(100vw - 2rem);
 }
 
 .touch-controls {
@@ -430,6 +435,7 @@ body {
     border-radius: 12px;
     backdrop-filter: blur(10px);
     border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .control-row {
@@ -507,6 +513,36 @@ body {
 }
 
 /* 响应式设计 */
+/* 大屏幕优化 */
+@media (min-width: 1200px) {
+    .game-container {
+        gap: 3rem;
+    }
+    
+    .game-board {
+        grid-template-columns: repeat(10, 35px);
+        grid-template-rows: repeat(20, 35px);
+    }
+    
+    .next-piece {
+        grid-template-columns: repeat(4, 28px);
+        grid-template-rows: repeat(4, 28px);
+    }
+}
+
+/* 中等屏幕 */
+@media (max-width: 1024px) {
+    .game-container {
+        gap: 1.5rem;
+        padding: 0 1rem;
+    }
+    
+    .game-info {
+        max-width: 300px;
+    }
+}
+
+/* 平板设备 */
 @media (max-width: 768px) {
     body {
         padding: 0.5rem;
@@ -516,17 +552,19 @@ body {
         flex-direction: column;
         align-items: center;
         gap: 1rem;
+        padding: 0;
     }
     
     .game-board {
-        grid-template-columns: repeat(10, 25px);
-        grid-template-rows: repeat(20, 25px);
+        grid-template-columns: repeat(10, 28px);
+        grid-template-rows: repeat(20, 28px);
     }
     
     .game-info {
         min-width: auto;
         width: 100%;
-        max-width: 400px;
+        max-width: 450px;
+        padding: 1.2rem;
     }
     
     .mobile-controls {
@@ -541,23 +579,55 @@ body {
         display: none;
     }
     
-    /* 中等屏幕下一个方块预览优化 */
+    /* 平板下一个方块预览优化 */
     .next-piece {
-        grid-template-columns: repeat(4, 22px);
-        grid-template-rows: repeat(4, 22px);
-        gap: 1.5px;
+        grid-template-columns: repeat(4, 24px);
+        grid-template-rows: repeat(4, 24px);
+        gap: 2px;
     }
     
     .next-piece div {
         background: rgba(51, 65, 85, 0.7);
         border: 1px solid rgba(100, 116, 139, 0.4);
     }
+    
+    .game-header h1 {
+        font-size: clamp(1.8rem, 6vw, 2.5rem);
+    }
 }
 
+/* 小屏幕手机 */
 @media (max-width: 480px) {
+    body {
+        padding: 0.25rem;
+    }
+    
+    .game-header {
+        margin-bottom: 1rem;
+    }
+    
     .game-board {
-        grid-template-columns: repeat(10, 22px);
-        grid-template-rows: repeat(20, 22px);
+        grid-template-columns: repeat(10, 24px);
+        grid-template-rows: repeat(20, 24px);
+        border-width: 2px;
+    }
+    
+    .game-info {
+        padding: 1rem;
+        max-width: 100%;
+    }
+    
+    .info-section {
+        margin-bottom: 1rem;
+    }
+    
+    .info-section h2 {
+        font-size: 0.9rem;
+    }
+    
+    .score-display, .level-display, .lines-display, .highscore-display {
+        font-size: 1.5rem;
+        padding: 0.4rem;
     }
     
     .next-piece {
@@ -565,6 +635,7 @@ body {
         grid-template-rows: repeat(4, 20px);
         gap: 1.5px;
         padding: 0.8rem;
+        margin: 0.8rem auto;
     }
     
     /* 移动端下一个方块增强对比度 */
@@ -587,7 +658,58 @@ body {
     }
     
     .game-header h1 {
-        font-size: 2rem;
+        font-size: clamp(1.5rem, 8vw, 2rem);
+    }
+    
+    .control-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .game-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .touch-btn {
+        width: 55px;
+        height: 55px;
+        font-size: 1.3rem;
+    }
+}
+
+/* 超小屏幕 */
+@media (max-width: 360px) {
+    .game-board {
+        grid-template-columns: repeat(10, 20px);
+        grid-template-rows: repeat(20, 20px);
+    }
+    
+    .next-piece {
+        grid-template-columns: repeat(4, 18px);
+        grid-template-rows: repeat(4, 18px);
+        gap: 1px;
+        padding: 0.6rem;
+    }
+    
+    .game-info {
+        padding: 0.8rem;
+    }
+    
+    .score-display, .level-display, .lines-display, .highscore-display {
+        font-size: 1.3rem;
+        padding: 0.3rem;
+    }
+    
+    .touch-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    .touch-controls {
+        padding: 0.8rem;
     }
 }
 
@@ -598,6 +720,93 @@ body {
         --card-bg: #111111;
         --text-primary: #ffffff;
         --border-color: #666666;
+    }
+}
+
+/* 横屏模式优化 */
+@media (max-width: 768px) and (orientation: landscape) {
+    body {
+        padding: 0.25rem;
+    }
+    
+    .game-header {
+        margin-bottom: 0.5rem;
+    }
+    
+    .game-header h1 {
+        font-size: clamp(1.2rem, 4vw, 1.8rem);
+    }
+    
+    .controls-hint {
+        font-size: 0.8rem;
+    }
+    
+    .game-container {
+        flex-direction: row;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .game-board {
+        grid-template-columns: repeat(10, 22px);
+        grid-template-rows: repeat(20, 22px);
+    }
+    
+    .game-info {
+        max-width: 250px;
+        padding: 1rem;
+    }
+    
+    .info-section {
+        margin-bottom: 0.8rem;
+    }
+    
+    .score-display, .level-display, .lines-display, .highscore-display {
+        font-size: 1.3rem;
+        padding: 0.3rem;
+    }
+    
+    .next-piece {
+        grid-template-columns: repeat(4, 18px);
+        grid-template-rows: repeat(4, 18px);
+        padding: 0.6rem;
+        margin: 0.6rem auto;
+    }
+    
+    .mobile-controls {
+        bottom: 0.5rem;
+    }
+    
+    .touch-controls {
+        padding: 0.6rem;
+    }
+    
+    .touch-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+    }
+}
+
+/* 容器查询支持（现代浏览器） */
+@container (max-width: 400px) {
+    .game-info {
+        padding: 0.8rem;
+    }
+    
+    .info-section h2 {
+        font-size: 0.85rem;
+    }
+}
+
+/* 高分辨率屏幕优化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .game-board {
+        border-width: 2px;
+    }
+    
+    .next-piece div {
+        border-width: 1px;
     }
 }
 
