@@ -491,21 +491,31 @@ body {
     touch-action: none;
     cursor: move;
     user-select: none;
-    transition: all 0.3s ease;
+    transition: opacity 0.2s ease, filter 0.2s ease;
+    will-change: transform;
 }
 
+/* 拖拽状态样式优化 */
 .mobile-controls.dragging {
-    transition: none;
-    opacity: 0.8;
-    transform: scale(1.05);
-}
-
-.mobile-controls.drag-handle {
-    cursor: grab;
-}
-
-.mobile-controls.drag-handle:active {
+    opacity: 0.9;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+    z-index: 1001;
     cursor: grabbing;
+}
+
+.mobile-controls.dragging .touch-controls {
+    transform: scale(1.02);
+    background: rgba(30, 41, 59, 0.98);
+    border-color: var(--primary-color);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.4),
+        0 0 0 2px rgba(99, 102, 241, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.mobile-controls.dragging .touch-controls::before {
+    color: var(--primary-color);
+    text-shadow: 0 0 8px rgba(99, 102, 241, 0.6);
 }
 
 .touch-controls {
@@ -520,8 +530,11 @@ body {
     border: 1px solid var(--border-color);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     position: relative;
+    transition: all 0.2s ease;
+    will-change: transform, background, border-color, box-shadow;
 }
 
+/* 拖拽手柄指示器 */
 .touch-controls::before {
     content: '⋮⋮';
     position: absolute;
@@ -533,6 +546,14 @@ body {
     line-height: 1;
     letter-spacing: 2px;
     pointer-events: none;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+/* 拖拽区域悬停效果 */
+@media (hover: hover) {
+    .touch-controls:hover::before {
+        color: rgba(255, 255, 255, 0.8);
+    }
 }
 
 .control-row {
@@ -642,7 +663,7 @@ body {
     
     .game-board {
         grid-template-columns: repeat(10, 40px);
-        grid-template-rows: repeat(20, 35.5px);
+        grid-template-rows: repeat(20, 38px);
         max-width: 450px;
         height: auto;
     }

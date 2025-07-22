@@ -247,8 +247,8 @@ class TetrisGame {
         classList: {
           add: () => {}, // 空函数，因为这些元素不在DOM中
           remove: () => {}, // 空函数
-          contains: () => true // 始终视为已占用
-        }
+          contains: () => true, // 始终视为已占用
+        },
       });
     }
 
@@ -280,23 +280,23 @@ class TetrisGame {
     if (this.touchLeft) {
       // 左移按钮 - 长按效果
       let leftInterval = null;
-      
+
       // 按下开始
       this.touchLeft.addEventListener("touchstart", (e) => {
         e.preventDefault();
         this.movePiece(-1, 0); // 立即移动一次
-        
+
         // 设置长按间隔，每150毫秒左移一格
         leftInterval = setInterval(() => {
           if (this.gameState === "playing") {
             this.movePiece(-1, 0);
           }
         }, 150);
-        
+
         // 添加按下状态样式
         this.touchLeft.classList.add("active");
       });
-      
+
       // 触摸结束或离开时清除间隔
       const clearLeftInterval = () => {
         if (leftInterval) {
@@ -305,29 +305,29 @@ class TetrisGame {
           this.touchLeft.classList.remove("active");
         }
       };
-      
+
       this.touchLeft.addEventListener("touchend", clearLeftInterval);
       this.touchLeft.addEventListener("touchcancel", clearLeftInterval);
 
       // 右移按钮 - 长按效果
       let rightInterval = null;
-      
+
       // 按下开始
       this.touchRight.addEventListener("touchstart", (e) => {
         e.preventDefault();
         this.movePiece(1, 0); // 立即移动一次
-        
+
         // 设置长按间隔，每150毫秒右移一格
         rightInterval = setInterval(() => {
           if (this.gameState === "playing") {
             this.movePiece(1, 0);
           }
         }, 150);
-        
+
         // 添加按下状态样式
         this.touchRight.classList.add("active");
       });
-      
+
       // 触摸结束或离开时清除间隔
       const clearRightInterval = () => {
         if (rightInterval) {
@@ -336,29 +336,29 @@ class TetrisGame {
           this.touchRight.classList.remove("active");
         }
       };
-      
+
       this.touchRight.addEventListener("touchend", clearRightInterval);
       this.touchRight.addEventListener("touchcancel", clearRightInterval);
 
       // 向下按钮 - 长按效果
       let downInterval = null;
-      
+
       // 按下开始
       this.touchDown.addEventListener("touchstart", (e) => {
         e.preventDefault();
         this.movePiece(0, 1); // 立即移动一次
-        
+
         // 设置长按间隔，每100毫秒下降一格
         downInterval = setInterval(() => {
           if (this.gameState === "playing") {
             this.movePiece(0, 1);
           }
         }, 100);
-        
+
         // 添加按下状态样式
         this.touchDown.classList.add("active");
       });
-      
+
       // 触摸结束或离开时清除间隔
       const clearDownInterval = () => {
         if (downInterval) {
@@ -367,7 +367,7 @@ class TetrisGame {
           this.touchDown.classList.remove("active");
         }
       };
-      
+
       this.touchDown.addEventListener("touchend", clearDownInterval);
       this.touchDown.addEventListener("touchcancel", clearDownInterval);
 
@@ -422,168 +422,281 @@ class TetrisGame {
     }
   }
 
+  /**
+   * 初始化移动端控制拖拽功能
+   * 优化版本：解决拖动不流畅和落点变化问题
+   */
   initializeDragControls() {
     if (!this.mobileControls) return;
 
     let isDragging = false;
     let startX, startY;
-    let initialX, initialY;
-    let currentX, currentY;
+    let offsetX, offsetY; // 改为使用偏移量而不是初始位置
+    let animationId = null;
+    let controlWidth, controlHeight; // 缓存控制面板尺寸
 
-    // 获取移动端控制的初始位置
-    const getInitialPosition = () => {
+    // 获取并缓存控制面板尺寸
+    const updateControlDimensions = () => {
       const rect = this.mobileControls.getBoundingClientRect();
-      return {
-        x: rect.left,
-        y: rect.top,
-      };
+      controlWidth = rect.width;
+      controlHeight = rect.height;
     };
 
-    // 设置控制位置
+    // 优化的位置设置函数，使用requestAnimationFrame
     const setControlPosition = (x, y) => {
-      // 确保控制不会超出屏幕边界
-      const controlRect = this.mobileControls.getBoundingClientRect();
-      const maxX = window.innerWidth - controlRect.width;
-      const maxY = window.innerHeight - controlRect.height;
+      // 边界检查
+      const maxX = window.innerWidth - controlWidth;
+      const maxY = window.innerHeight - controlHeight;
 
       x = Math.max(0, Math.min(x, maxX));
       y = Math.max(0, Math.min(y, maxY));
 
-      this.mobileControls.style.left = x + "px";
-      this.mobileControls.style.top = y + "px";
-      this.mobileControls.style.right = "auto";
-      this.mobileControls.style.bottom = "auto";
+      // 使用transform代替left/top以获得更好的性能
+      this.mobileControls.style.transform = `translate(${x}px, ${y}px)`;
+      this.mobileControls.style.left = '0';
+      this.mobileControls.style.top = '0';
+      this.mobileControls.style.right = 'auto';
+      this.mobileControls.style.bottom = 'auto';
     };
 
-    // 触摸开始
+    // 平滑的拖拽更新函数
+    const updateDragPosition = (clientX, clientY) => {
+      if (!isDragging) return;
+
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+
+      animationId = requestAnimationFrame(() => {
+        const newX = clientX - offsetX;
+        const newY = clientY - offsetY;
+        setControlPosition(newX, newY);
+      });
+    };
+
+    // 触摸开始事件处理
     const handleTouchStart = (e) => {
-      // 只有点击控制区域的顶部拖拽手柄时才开始拖拽
-      if (!e.target.closest(".touch-controls")) return;
+      // 检查是否点击在控制面板上
+      if (!e.target.closest('.mobile-controls')) return;
 
       const touch = e.touches[0];
       const rect = this.mobileControls.getBoundingClientRect();
 
-      // 检查是否点击在拖拽区域（控制面板顶部20px区域）
+      // 检查是否点击在拖拽区域（控制面板顶部40px区域或空白区域）
       const relativeY = touch.clientY - rect.top;
-      if (relativeY > 30) return; // 只有点击顶部30px区域才能拖拽
+      const isInDragArea = relativeY <= 40 || !e.target.closest('button');
+      
+      if (!isInDragArea) return;
 
       isDragging = true;
-      startX = touch.clientX;
-      startY = touch.clientY;
+      
+      // 更新控制面板尺寸缓存
+      updateControlDimensions();
+      
+      // 计算触摸点相对于控制面板的偏移量
+      offsetX = touch.clientX - rect.left;
+      offsetY = touch.clientY - rect.top;
 
-      const position = getInitialPosition();
-      initialX = position.x;
-      initialY = position.y;
-
-      this.mobileControls.classList.add("dragging");
+      this.mobileControls.classList.add('dragging');
       e.preventDefault();
+      e.stopPropagation();
     };
 
-    // 触摸移动
+    // 触摸移动事件处理
     const handleTouchMove = (e) => {
       if (!isDragging) return;
 
       e.preventDefault();
+      e.stopPropagation();
+      
       const touch = e.touches[0];
-
-      currentX = initialX + (touch.clientX - startX);
-      currentY = initialY + (touch.clientY - startY);
-
-      setControlPosition(currentX, currentY);
+      updateDragPosition(touch.clientX, touch.clientY);
     };
 
-    // 触摸结束
+    // 触摸结束事件处理
     const handleTouchEnd = (e) => {
       if (!isDragging) return;
 
       isDragging = false;
-      this.mobileControls.classList.remove("dragging");
+      this.mobileControls.classList.remove('dragging');
 
-      // 保存位置到本地存储
-      const rect = this.mobileControls.getBoundingClientRect();
-      localStorage.setItem(
-        "tetris-control-position",
-        JSON.stringify({
-          x: rect.left,
-          y: rect.top,
-        })
-      );
+      // 取消任何待处理的动画
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+
+      // 保存最终位置到本地存储
+      const transform = this.mobileControls.style.transform;
+      const matches = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
+      
+      if (matches) {
+        const x = parseFloat(matches[1]);
+        const y = parseFloat(matches[2]);
+        
+        localStorage.setItem(
+          'tetris-control-position',
+          JSON.stringify({ x, y })
+        );
+      }
     };
 
-    // 鼠标事件（用于桌面测试）
+    // 鼠标事件处理（用于桌面测试）
     const handleMouseDown = (e) => {
-      if (!e.target.closest(".touch-controls")) return;
+      if (!e.target.closest('.mobile-controls')) return;
 
       const rect = this.mobileControls.getBoundingClientRect();
       const relativeY = e.clientY - rect.top;
-      if (relativeY > 30) return;
+      const isInDragArea = relativeY <= 40 || !e.target.closest('button');
+      
+      if (!isInDragArea) return;
 
       isDragging = true;
-      startX = e.clientX;
-      startY = e.clientY;
+      updateControlDimensions();
+      
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
 
-      const position = getInitialPosition();
-      initialX = position.x;
-      initialY = position.y;
-
-      this.mobileControls.classList.add("dragging");
+      this.mobileControls.classList.add('dragging');
       e.preventDefault();
+      e.stopPropagation();
     };
 
     const handleMouseMove = (e) => {
       if (!isDragging) return;
 
       e.preventDefault();
-      currentX = initialX + (e.clientX - startX);
-      currentY = initialY + (e.clientY - startY);
-
-      setControlPosition(currentX, currentY);
+      e.stopPropagation();
+      updateDragPosition(e.clientX, e.clientY);
     };
 
     const handleMouseUp = (e) => {
       if (!isDragging) return;
 
       isDragging = false;
-      this.mobileControls.classList.remove("dragging");
+      this.mobileControls.classList.remove('dragging');
 
-      const rect = this.mobileControls.getBoundingClientRect();
-      localStorage.setItem(
-        "tetris-control-position",
-        JSON.stringify({
-          x: rect.left,
-          y: rect.top,
-        })
-      );
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+
+      // 保存位置
+      const transform = this.mobileControls.style.transform;
+      const matches = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
+      
+      if (matches) {
+        const x = parseFloat(matches[1]);
+        const y = parseFloat(matches[2]);
+        
+        localStorage.setItem(
+          'tetris-control-position',
+          JSON.stringify({ x, y })
+        );
+      }
     };
 
-    // 绑定事件
-    this.mobileControls.addEventListener("touchstart", handleTouchStart, {
+    // 窗口大小变化时重新计算边界
+    const handleResize = () => {
+      if (isDragging) return; // 拖拽时不调整
+      
+      updateControlDimensions();
+      
+      // 确保控制面板仍在可见区域内
+      const transform = this.mobileControls.style.transform;
+      const matches = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
+      
+      if (matches) {
+        const currentX = parseFloat(matches[1]);
+        const currentY = parseFloat(matches[2]);
+        
+        const maxX = window.innerWidth - controlWidth;
+        const maxY = window.innerHeight - controlHeight;
+        
+        const newX = Math.max(0, Math.min(currentX, maxX));
+        const newY = Math.max(0, Math.min(currentY, maxY));
+        
+        if (newX !== currentX || newY !== currentY) {
+          setControlPosition(newX, newY);
+        }
+      }
+    };
+
+    // 绑定事件监听器
+    this.mobileControls.addEventListener('touchstart', handleTouchStart, {
       passive: false,
     });
-    document.addEventListener("touchmove", handleTouchMove, { passive: false });
-    document.addEventListener("touchend", handleTouchEnd);
+    document.addEventListener('touchmove', handleTouchMove, { 
+      passive: false 
+    });
+    document.addEventListener('touchend', handleTouchEnd);
+    document.addEventListener('touchcancel', handleTouchEnd); // 处理触摸取消
 
     // 桌面鼠标事件
-    this.mobileControls.addEventListener("mousedown", handleMouseDown);
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    this.mobileControls.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    
+    // 窗口大小变化事件
+    window.addEventListener('resize', handleResize);
 
+    // 初始化控制面板尺寸
+    updateControlDimensions();
+    
     // 恢复保存的位置
     this.restoreControlPosition();
   }
 
+  /**
+   * 恢复保存的控制面板位置
+   * 更新为配合transform定位方式
+   */
   restoreControlPosition() {
-    const savedPosition = localStorage.getItem("tetris-control-position");
+    const savedPosition = localStorage.getItem('tetris-control-position');
     if (savedPosition) {
       try {
         const position = JSON.parse(savedPosition);
-        this.mobileControls.style.left = position.x + "px";
-        this.mobileControls.style.top = position.y + "px";
-        this.mobileControls.style.right = "auto";
-        this.mobileControls.style.bottom = "auto";
+        const x = position.x || 0;
+        const y = position.y || 0;
+        
+        // 确保位置在有效范围内
+        const rect = this.mobileControls.getBoundingClientRect();
+        const maxX = window.innerWidth - rect.width;
+        const maxY = window.innerHeight - rect.height;
+        
+        const validX = Math.max(0, Math.min(x, maxX));
+        const validY = Math.max(0, Math.min(y, maxY));
+        
+        // 使用transform设置位置
+        this.mobileControls.style.transform = `translate(${validX}px, ${validY}px)`;
+        this.mobileControls.style.left = '0';
+        this.mobileControls.style.top = '0';
+        this.mobileControls.style.right = 'auto';
+        this.mobileControls.style.bottom = 'auto';
+        
+        // 如果位置被调整了，更新存储的值
+        if (validX !== x || validY !== y) {
+          localStorage.setItem(
+            'tetris-control-position',
+            JSON.stringify({ x: validX, y: validY })
+          );
+        }
       } catch (e) {
-        console.warn("无法恢复控制位置:", e);
+        console.warn('无法恢复控制位置:', e);
+        // 设置默认位置
+        this.mobileControls.style.transform = 'translate(20px, 20px)';
+        this.mobileControls.style.left = '0';
+        this.mobileControls.style.top = '0';
+        this.mobileControls.style.right = 'auto';
+        this.mobileControls.style.bottom = 'auto';
       }
+    } else {
+      // 首次使用，设置默认位置
+      this.mobileControls.style.transform = 'translate(20px, 20px)';
+      this.mobileControls.style.left = '0';
+      this.mobileControls.style.top = '0';
+      this.mobileControls.style.right = 'auto';
+      this.mobileControls.style.bottom = 'auto';
     }
   }
 
@@ -679,7 +792,7 @@ class TetrisGame {
           if (newX < 0 || newX >= this.BOARD_WIDTH) {
             return true;
           }
-          
+
           // 检查底部边界
           if (newY >= this.BOARD_HEIGHT) {
             return true;
@@ -1059,12 +1172,12 @@ class TetrisGame {
   initializeKeyboardControls() {
     this.keyState = {
       ArrowDown: false,
-      interval: null
+      interval: null,
     };
-    
+
     // 键盘按下事件
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
-    
+
     // 键盘释放事件
     document.addEventListener("keyup", (event) => {
       if (event.code === "ArrowDown") {
@@ -1077,7 +1190,7 @@ class TetrisGame {
       }
     });
   }
-  
+
   handleKeyDown(event) {
     if (this.gameState !== "playing") {
       // 在非游戏状态下允许的快捷键
@@ -1109,7 +1222,7 @@ class TetrisGame {
         if (!this.keyState.ArrowDown) {
           this.keyState.ArrowDown = true;
           this.movePiece(0, 1); // 立即移动一次
-          
+
           // 设置长按间隔，每100毫秒下降一格
           this.keyState.interval = setInterval(() => {
             if (this.gameState === "playing") {
