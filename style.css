@@ -1,4 +1,6 @@
+/* ===== CSS变量定义 ===== */
 :root {
+    /* 颜色主题 */
     --primary-color: #6366f1;
     --secondary-color: #8b5cf6;
     --accent-color: #06b6d4;
@@ -10,27 +12,33 @@
     --text-primary: #f8fafc;
     --text-secondary: #cbd5e1;
     --border-color: #334155;
+    
+    /* 阴影效果 */
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+    
+    /* 渐变效果 */
     --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     --gradient-game: linear-gradient(145deg, #1e293b, #334155);
+    
+    /* 布局尺寸 */
     --header-height: 60px;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* 安全区域适配 */
-:root {
+    
+    /* 安全区域适配 */
     --safe-area-inset-top: env(safe-area-inset-top, 0px);
     --safe-area-inset-right: env(safe-area-inset-right, 0px);
     --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
     --safe-area-inset-left: env(safe-area-inset-left, 0px);
 }
 
+/* ===== 全局重置 ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ===== 基础布局 ===== */
 html, body {
     height: 100%;
     width: 100%;
@@ -50,13 +58,11 @@ body {
         radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
         radial-gradient(circle at 40% 40%, rgba(120, 200, 255, 0.2) 0%, transparent 50%);
     box-sizing: border-box;
-    padding-top: max(0px, var(--safe-area-inset-top));
-    padding-right: max(0px, var(--safe-area-inset-right));
-    padding-bottom: max(0px, var(--safe-area-inset-bottom));
-    padding-left: max(0px, var(--safe-area-inset-left));
+    padding: max(0px, var(--safe-area-inset-top)) max(0px, var(--safe-area-inset-right)) max(0px, var(--safe-area-inset-bottom)) max(0px, var(--safe-area-inset-left));
     overflow-x: hidden;
 }
 
+/* ===== 游戏头部 ===== */
 .game-header {
     display: flex;
     justify-content: space-between;
@@ -90,11 +96,11 @@ body {
     margin-right: 10px;
 }
 
+/* ===== 游戏容器 ===== */
 .game-container {
     display: flex;
     gap: clamp(0.5rem, 2vw, 1.5rem);
     max-width: 1200px;
-    /* margin: 0 auto; */
     align-items: flex-start;
     justify-content: center;
     flex-wrap: wrap;
@@ -107,6 +113,7 @@ body {
     box-sizing: border-box;
 }
 
+/* ===== 游戏板 ===== */
 .game-board-container {
     position: relative;
     border-radius: 12px;
@@ -118,7 +125,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-bottom: 0; /* 移除底部内边距 */
 }
 
 .game-board {
@@ -129,12 +135,12 @@ body {
     border: 3px solid var(--border-color);
     position: relative;
     max-width: 100%;
-    height: 100%; /* 设置为100%高度，与容器一致 */
+    height: 100%;
     margin: 0 auto;
-    padding-bottom: 0; /* 移除底部内边距 */
-    box-sizing: border-box; /* 确保边框包含在元素尺寸内 */
+    box-sizing: border-box;
 }
 
+/* ===== 游戏覆盖层 ===== */
 .game-overlay {
     position: absolute;
     top: 0;
@@ -171,6 +177,7 @@ body {
     font-size: 1.1rem;
 }
 
+/* ===== 游戏信息面板 ===== */
 .game-info {
     background: var(--card-bg);
     border-radius: 12px;
@@ -200,6 +207,7 @@ body {
     letter-spacing: 0.05em;
 }
 
+/* ===== 得分显示 ===== */
 .score-display, .level-display, .lines-display, .highscore-display {
     font-size: 1.8rem;
     font-weight: 700;
@@ -218,6 +226,7 @@ body {
     box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
 }
 
+/* ===== 下一个方块预览 ===== */
 .next-piece {
     display: grid;
     grid-template-columns: repeat(4, clamp(18px, 3vw, 28px));
@@ -245,6 +254,7 @@ body {
     color: var(--accent-color);
 }
 
+/* ===== 统计网格 ===== */
 .stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -268,7 +278,9 @@ body {
     padding: 0.4rem;
 }
 
-.next-piece div {
+/* ===== 方块基础样式 ===== */
+.next-piece div,
+.block {
     background: rgba(51, 65, 85, 0.6);
     border: 1px solid rgba(100, 116, 139, 0.3);
     border-radius: 3px;
@@ -276,7 +288,8 @@ body {
     position: relative;
 }
 
-.next-piece div::before {
+.next-piece div::before,
+.block::before {
     content: '';
     position: absolute;
     top: 1px;
@@ -289,66 +302,19 @@ body {
     transition: opacity 0.2s ease;
 }
 
-/* 下一个方块的颜色样式 - 增强对比度 */
-.next-piece .piece-i { 
-    background: linear-gradient(145deg, #06b6d4, #0891b2);
-    border-color: #0891b2;
-    box-shadow: 
-        0 2px 4px rgba(6, 182, 212, 0.4),
-        inset 0 1px 2px rgba(255, 255, 255, 0.2);
+.block {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
 }
 
-.next-piece .piece-j { 
-    background: linear-gradient(145deg, #3b82f6, #2563eb);
-    border-color: #2563eb;
-    box-shadow: 
-        0 2px 4px rgba(59, 130, 246, 0.4),
-        inset 0 1px 2px rgba(255, 255, 255, 0.2);
-}
-
-.next-piece .piece-l { 
-    background: linear-gradient(145deg, #f59e0b, #d97706);
-    border-color: #d97706;
-    box-shadow: 
-        0 2px 4px rgba(245, 158, 11, 0.4),
-        inset 0 1px 2px rgba(255, 255, 255, 0.2);
-}
-
-.next-piece .piece-o { 
-    background: linear-gradient(145deg, #eab308, #ca8a04);
-    border-color: #ca8a04;
-    box-shadow: 
-        0 2px 4px rgba(234, 179, 8, 0.4),
-        inset 0 1px 2px rgba(255, 255, 255, 0.2);
-}
-
-.next-piece .piece-s { 
-    background: linear-gradient(145deg, #10b981, #059669);
-    border-color: #059669;
-    box-shadow: 
-        0 2px 4px rgba(16, 185, 129, 0.4),
-        inset 0 1px 2px rgba(255, 255, 255, 0.2);
-}
-
-.next-piece .piece-t { 
-    background: linear-gradient(145deg, #8b5cf6, #7c3aed);
-    border-color: #7c3aed;
-    box-shadow: 
-        0 2px 4px rgba(139, 92, 246, 0.4),
-        inset 0 1px 2px rgba(255, 255, 255, 0.2);
-}
-
-.next-piece .piece-z { 
-    background: linear-gradient(145deg, #ef4444, #dc2626);
-    border-color: #dc2626;
-    box-shadow: 
-        0 2px 4px rgba(239, 68, 68, 0.4),
-        inset 0 1px 2px rgba(255, 255, 255, 0.2);
-}
-
-/* 当方块有颜色时显示高光效果 */
+.block.taken::before,
 .next-piece div[class*="piece-"]::before {
     opacity: 1;
+}
+
+.block.locked {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.3);
 }
 
 .block {
@@ -380,49 +346,71 @@ body {
     box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.3);
 }
 
-/* 方块颜色主题 */
-.piece-i { 
+/* ===== 方块颜色主题 ===== */
+.piece-i,
+.next-piece .piece-i { 
     background: linear-gradient(145deg, #06b6d4, #0891b2);
     border-color: #0891b2;
-    box-shadow: inset 0 1px 3px rgba(6, 182, 212, 0.3);
+    box-shadow: 
+        0 2px 4px rgba(6, 182, 212, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
-.piece-j { 
+.piece-j,
+.next-piece .piece-j { 
     background: linear-gradient(145deg, #3b82f6, #2563eb);
     border-color: #2563eb;
-    box-shadow: inset 0 1px 3px rgba(59, 130, 246, 0.3);
+    box-shadow: 
+        0 2px 4px rgba(59, 130, 246, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
-.piece-l { 
+.piece-l,
+.next-piece .piece-l { 
     background: linear-gradient(145deg, #f59e0b, #d97706);
     border-color: #d97706;
-    box-shadow: inset 0 1px 3px rgba(245, 158, 11, 0.3);
+    box-shadow: 
+        0 2px 4px rgba(245, 158, 11, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
-.piece-o { 
+.piece-o,
+.next-piece .piece-o { 
     background: linear-gradient(145deg, #eab308, #ca8a04);
     border-color: #ca8a04;
-    box-shadow: inset 0 1px 3px rgba(234, 179, 8, 0.3);
+    box-shadow: 
+        0 2px 4px rgba(234, 179, 8, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
-.piece-s { 
+.piece-s,
+.next-piece .piece-s { 
     background: linear-gradient(145deg, #10b981, #059669);
     border-color: #059669;
-    box-shadow: inset 0 1px 3px rgba(16, 185, 129, 0.3);
+    box-shadow: 
+        0 2px 4px rgba(16, 185, 129, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
-.piece-t { 
+.piece-t,
+.next-piece .piece-t { 
     background: linear-gradient(145deg, #8b5cf6, #7c3aed);
     border-color: #7c3aed;
-    box-shadow: inset 0 1px 3px rgba(139, 92, 246, 0.3);
+    box-shadow: 
+        0 2px 4px rgba(139, 92, 246, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
-.piece-z { 
+.piece-z,
+.next-piece .piece-z { 
     background: linear-gradient(145deg, #ef4444, #dc2626);
     border-color: #dc2626;
-    box-shadow: inset 0 1px 3px rgba(239, 68, 68, 0.3);
+    box-shadow: 
+        0 2px 4px rgba(239, 68, 68, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
+/* ===== 游戏控制按钮 ===== */
 .game-controls {
     display: flex;
     flex-direction: column;
@@ -490,7 +478,7 @@ body {
 
 
 
-/* 移动端控制 */
+/* ===== 移动端控制 ===== */
 .mobile-controls {
     position: fixed;
     bottom: env(safe-area-inset-bottom, 1rem);
@@ -578,16 +566,7 @@ body {
     box-shadow: 0 2px 8px rgba(99, 102, 241, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* 触摸反馈动画 */
-@keyframes touchFeedback {
-    0% { transform: scale(1); }
-    50% { transform: scale(0.95); background: rgba(99, 102, 241, 0.8); }
-    100% { transform: scale(1); }
-}
 
-.touch-btn.touched {
-    animation: touchFeedback 0.15s ease;
-}
 
 @media (hover: hover) {
     .touch-btn:hover {
@@ -596,7 +575,7 @@ body {
     }
 }
 
-/* 动画效果 */
+/* ===== 动画效果 ===== */
 @keyframes slideInUp {
     from {
         opacity: 0;
@@ -632,6 +611,12 @@ body {
     }
 }
 
+@keyframes touchFeedback {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); background: rgba(99, 102, 241, 0.8); }
+    100% { transform: scale(1); }
+}
+
 .line-complete {
     animation: lineComplete 0.5s ease-in-out;
 }
@@ -640,7 +625,12 @@ body {
     animation: slideInUp 0.6s ease-out;
 }
 
-/* 响应式设计 - 增强版 */
+.touch-btn.touched {
+    animation: touchFeedback 0.15s ease;
+}
+
+/* ===== 响应式设计 ===== */
+
 /* 超大屏幕 (1400px+) */
 @media (min-width: 1400px) {
     .game-container {
@@ -652,7 +642,7 @@ body {
     
     .game-board {
         grid-template-columns: repeat(10, 40px);
-        grid-template-rows: repeat(20, 38px);
+        grid-template-rows: repeat(20, 35.5px);
         max-width: 450px;
         height: auto;
     }
@@ -1186,6 +1176,8 @@ body {
     }
 }
 
+/* ===== 辅助功能和特殊支持 ===== */
+
 /* 高对比度模式支持 */
 @media (prefers-contrast: high) {
     :root {
@@ -1196,6 +1188,70 @@ body {
     }
 }
 
+/* 减少动画偏好支持 */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* 高分辨率屏幕优化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .game-board {
+        border-width: 2px;
+    }
+    
+    .next-piece div {
+        border-width: 1px;
+    }
+}
+
+/* 焦点可见性 */
+.touch-btn:focus-visible,
+.control-btn:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+/* 防止文本选择 */
+.mobile-controls,
+.touch-controls,
+.touch-btn {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* 改善触摸目标大小 */
+@media (pointer: coarse) {
+    .touch-btn {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0.6rem;
+    }
+    
+    .control-btn {
+        min-height: 44px;
+        padding: 0.6rem 1rem;
+    }
+}
+
+/* 容器查询支持（现代浏览器） */
+@container (max-width: 400px) {
+    .game-info {
+        padding: 0.8rem;
+    }
+    
+    .info-section h2 {
+        font-size: 0.85rem;
+    }
+}
+
+/* ===== iPad 专用优化 ===== */
 /* iPad 专用优化 */
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
     .game-container {
@@ -1374,68 +1430,5 @@ body {
     
     .control-row {
         flex-direction: column;
-    }
-}
-
-/* 容器查询支持（现代浏览器） */
-@container (max-width: 400px) {
-    .game-info {
-        padding: 0.8rem;
-    }
-    
-    .info-section h2 {
-        font-size: 0.85rem;
-    }
-}
-
-/* 高分辨率屏幕优化 */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    .game-board {
-        border-width: 2px;
-    }
-    
-    .next-piece div {
-        border-width: 1px;
-    }
-}
-
-/* 减少动画偏好支持 */
-@media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
-/* 焦点可见性 */
-.touch-btn:focus-visible,
-.control-btn:focus-visible {
-    outline: 2px solid #fff;
-    outline-offset: 2px;
-}
-
-/* 防止文本选择 */
-.mobile-controls,
-.touch-controls,
-.touch-btn {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-touch-callout: none;
-}
-
-/* 改善触摸目标大小 */
-@media (pointer: coarse) {
-    .touch-btn {
-        min-width: 44px;
-        min-height: 44px;
-        padding: 0.6rem;
-    }
-    
-    .control-btn {
-        min-height: 44px;
-        padding: 0.6rem 1rem;
     }
 }

@@ -278,17 +278,67 @@ class TetrisGame {
 
     // 移动端触摸事件
     if (this.touchLeft) {
-      // 左移按钮 - 单击事件
+      // 左移按钮 - 长按效果
+      let leftInterval = null;
+      
+      // 按下开始
       this.touchLeft.addEventListener("touchstart", (e) => {
         e.preventDefault();
-        this.movePiece(-1, 0);
+        this.movePiece(-1, 0); // 立即移动一次
+        
+        // 设置长按间隔，每150毫秒左移一格
+        leftInterval = setInterval(() => {
+          if (this.gameState === "playing") {
+            this.movePiece(-1, 0);
+          }
+        }, 150);
+        
+        // 添加按下状态样式
+        this.touchLeft.classList.add("active");
       });
+      
+      // 触摸结束或离开时清除间隔
+      const clearLeftInterval = () => {
+        if (leftInterval) {
+          clearInterval(leftInterval);
+          leftInterval = null;
+          this.touchLeft.classList.remove("active");
+        }
+      };
+      
+      this.touchLeft.addEventListener("touchend", clearLeftInterval);
+      this.touchLeft.addEventListener("touchcancel", clearLeftInterval);
 
-      // 右移按钮 - 单击事件
+      // 右移按钮 - 长按效果
+      let rightInterval = null;
+      
+      // 按下开始
       this.touchRight.addEventListener("touchstart", (e) => {
         e.preventDefault();
-        this.movePiece(1, 0);
+        this.movePiece(1, 0); // 立即移动一次
+        
+        // 设置长按间隔，每150毫秒右移一格
+        rightInterval = setInterval(() => {
+          if (this.gameState === "playing") {
+            this.movePiece(1, 0);
+          }
+        }, 150);
+        
+        // 添加按下状态样式
+        this.touchRight.classList.add("active");
       });
+      
+      // 触摸结束或离开时清除间隔
+      const clearRightInterval = () => {
+        if (rightInterval) {
+          clearInterval(rightInterval);
+          rightInterval = null;
+          this.touchRight.classList.remove("active");
+        }
+      };
+      
+      this.touchRight.addEventListener("touchend", clearRightInterval);
+      this.touchRight.addEventListener("touchcancel", clearRightInterval);
 
       // 向下按钮 - 长按效果
       let downInterval = null;
