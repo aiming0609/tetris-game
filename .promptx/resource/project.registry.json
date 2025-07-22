@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "source": "project",
+  "metadata": {
+    "version": "2.0.0",
+    "description": "project 级资源注册表",
+    "createdAt": "2025-07-22T00:50:07.231Z",
+    "updatedAt": "2025-07-22T00:50:07.233Z",
+    "resourceCount": 1
+  },
+  "resources": [
+    {
+      "id": "frontend-expert",
+      "source": "project",
+      "protocol": "role",
+      "name": "Frontend Expert 角色",
+      "description": "专业角色，提供特定领域的专业能力",
+      "reference": "@project://.promptx/resource/role/frontend-expert/frontend-expert.role.md",
+      "metadata": {
+        "createdAt": "2025-07-22T00:50:07.232Z",
+        "updatedAt": "2025-07-22T00:50:07.232Z",
+        "scannedAt": "2025-07-22T00:50:07.232Z",
+        "path": "role/frontend-expert/frontend-expert.role.md"
+      }
+    }
+  ],
+  "stats": {
+    "totalResources": 1,
+    "byProtocol": {
+      "role": 1
+    },
+    "bySource": {
+      "project": 1
+    }
+  }
+}

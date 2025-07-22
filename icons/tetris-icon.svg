@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#121212" rx="64" ry="64"/>
+  <!-- T形方块 -->
+  <g transform="translate(128, 96)">
+    <rect x="0" y="0" width="64" height="64" fill="#9c27b0" stroke="#ffffff" stroke-width="2"/>
+    <rect x="64" y="0" width="64" height="64" fill="#9c27b0" stroke="#ffffff" stroke-width="2"/>
+    <rect x="128" y="0" width="64" height="64" fill="#9c27b0" stroke="#ffffff" stroke-width="2"/>
+    <rect x="64" y="64" width="64" height="64" fill="#9c27b0" stroke="#ffffff" stroke-width="2"/>
+  </g>
+  <!-- I形方块 -->
+  <g transform="translate(96, 224)">
+    <rect x="0" y="0" width="64" height="64" fill="#00bcd4" stroke="#ffffff" stroke-width="2"/>
+    <rect x="64" y="0" width="64" height="64" fill="#00bcd4" stroke="#ffffff" stroke-width="2"/>
+    <rect x="128" y="0" width="64" height="64" fill="#00bcd4" stroke="#ffffff" stroke-width="2"/>
+    <rect x="192" y="0" width="64" height="64" fill="#00bcd4" stroke="#ffffff" stroke-width="2"/>
+  </g>
+  <!-- L形方块 -->
+  <g transform="translate(256, 288)">
+    <rect x="0" y="0" width="64" height="64" fill="#ff9800" stroke="#ffffff" stroke-width="2"/>
+    <rect x="0" y="64" width="64" height="64" fill="#ff9800" stroke="#ffffff" stroke-width="2"/>
+    <rect x="64" y="64" width="64" height="64" fill="#ff9800" stroke="#ffffff" stroke-width="2"/>
+    <rect x="128" y="64" width="64" height="64" fill="#ff9800" stroke="#ffffff" stroke-width="2"/>
+  </g>
+</svg>

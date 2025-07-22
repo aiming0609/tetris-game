@@ -1,0 +1,97 @@
+{
+  "currentState": "role_activated_with_memory",
+  "stateHistory": [
+    {
+      "from": "initial",
+      "command": "init",
+      "timestamp": "2025-07-22T00:44:52.240Z",
+      "args": [
+        {
+          "workingDirectory": "e:\\works\\tetris-game",
+          "ideType": "cursor"
+        }
+      ]
+    },
+    {
+      "from": "initialized",
+      "command": "welcome",
+      "timestamp": "2025-07-22T00:44:56.721Z",
+      "args": []
+    },
+    {
+      "from": "service_discovery",
+      "command": "action",
+      "timestamp": "2025-07-22T00:45:03.418Z",
+      "args": [
+        "luban"
+      ]
+    },
+    {
+      "from": "role_activated_with_memory",
+      "command": "init",
+      "timestamp": "2025-07-22T00:47:55.919Z",
+      "args": [
+        {
+          "workingDirectory": "e:\\works\\tetris-game"
+        }
+      ]
+    },
+    {
+      "from": "initialized",
+      "command": "welcome",
+      "timestamp": "2025-07-22T00:48:00.974Z",
+      "args": []
+    },
+    {
+      "from": "service_discovery",
+      "command": "action",
+      "timestamp": "2025-07-22T00:48:06.899Z",
+      "args": [
+        "luban"
+      ]
+    },
+    {
+      "from": "role_activated_with_memory",
+      "command": "action",
+      "timestamp": "2025-07-22T00:49:25.817Z",
+      "args": [
+        "nuwa"
+      ]
+    },
+    {
+      "from": "role_activated_with_memory",
+      "command": "learn",
+      "timestamp": "2025-07-22T00:49:33.345Z",
+      "args": [
+        "@manual://role-creation"
+      ]
+    },
+    {
+      "from": "learn_error",
+      "command": "action",
+      "timestamp": "2025-07-22T00:50:01.953Z",
+      "args": [
+        "frontend-expert"
+      ]
+    },
+    {
+      "from": "role_activated_with_memory",
+      "command": "init",
+      "timestamp": "2025-07-22T00:50:07.226Z",
+      "args": [
+        {
+          "workingDirectory": "e:\\works\\tetris-game"
+        }
+      ]
+    },
+    {
+      "from": "initialized",
+      "command": "action",
+      "timestamp": "2025-07-22T00:50:12.936Z",
+      "args": [
+        "frontend-expert"
+      ]
+    }
+  ],
+  "lastUpdated": "2025-07-22T00:50:12.941Z"
+}

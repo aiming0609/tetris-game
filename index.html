@@ -3,19 +3,30 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>🎮 Gemini Tetris - 俄罗斯方块游戏</title>
+    <meta name="description" content="经典俄罗斯方块游戏，支持离线玩耍">
+    <meta name="theme-color" content="#121212">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- PWA相关 -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/tetris-icon.svg" type="image/svg+xml">
+    <!-- iOS图标支持 -->
+    <link rel="apple-touch-icon" href="icons/tetris-icon.svg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="俄罗斯方块">
 </head>
 
 <body>
     <div class="game-header">
         <h1>🎮 Gemini Tetris</h1>
         <div class="controls-hint">
-            <p>⬅️➡️ 移动 | ⬆️ 旋转 | ⬇️ 加速</p>
+            <p>⬅️➡️ 移动 | ⬆️ 旋转 | ⬇️ 加速 | ⏸️ 暂停</p>
         </div>
     </div>
 
@@ -31,62 +42,42 @@
         </div>
 
         <div class="game-info">
-            <div class="info-section">
-                <h2>得分</h2>
-                <div class="score-display" id="score">0</div>
-            </div>
-
-            <div class="info-section">
-                <h2>等级</h2>
-                <div class="level-display" id="level">1</div>
-            </div>
-
-            <div class="info-section">
-                <h2>消除行数</h2>
-                <div class="lines-display" id="lines">0</div>
-            </div>
-
-            <div class="info-section">
-                <h2>最高分</h2>
-                <div class="highscore-display" id="highscore">0</div>
-            </div>
-
-            <div class="info-section">
+            <div class="info-section next-section">
                 <h2>下一个</h2>
                 <div class="next-piece"></div>
             </div>
 
-            <div class="game-controls">
-                <button id="start-button" class="control-btn primary">开始游戏</button>
-                <button id="pause-button" class="control-btn" disabled>暂停</button>
-                <button id="restart-button" class="control-btn">重新开始</button>
-            </div>
+            <div class="stats-grid">
+                <div class="info-section">
+                    <h2>得分</h2>
+                    <div class="score-display" id="score">0</div>
+                </div>
 
-            <div class="info-section">
-                <h2>控制说明</h2>
-                <div class="controls-guide">
-                    <div class="control-item">
-                        <span class="key">⬅️</span>
-                        <span class="action">向左移动</span>
-                    </div>
-                    <div class="control-item">
-                        <span class="key">➡️</span>
-                        <span class="action">向右移动</span>
-                    </div>
-                    <div class="control-item">
-                        <span class="key">⬆️</span>
-                        <span class="action">旋转方块</span>
-                    </div>
-                    <div class="control-item">
-                        <span class="key">⬇️</span>
-                        <span class="action">加速下落</span>
-                    </div>
-                    <div class="control-item">
-                        <span class="key">空格</span>
-                        <span class="action">暂停/继续</span>
-                    </div>
+                <div class="info-section">
+                    <h2>等级</h2>
+                    <div class="level-display" id="level">1</div>
+                </div>
+
+                <div class="info-section">
+                    <h2>消除行数</h2>
+                    <div class="lines-display" id="lines">0</div>
+                </div>
+
+                <div class="info-section">
+                    <h2>最高分</h2>
+                    <div class="highscore-display" id="highscore">0</div>
                 </div>
             </div>
+
+            <div class="game-controls">
+                <button id="start-button" class="control-btn primary">开始游戏</button>
+                <div class="control-row">
+                    <button id="pause-button" class="control-btn" disabled>暂停</button>
+                    <button id="restart-button" class="control-btn">重新开始</button>
+                </div>
+            </div>
+
+
         </div>
     </div>
 
@@ -105,6 +96,21 @@
     </div>
 
     <script src="script.js"></script>
+
+    <!-- 注册Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('Service Worker 注册成功:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker 注册失败:', error);
+                    });
+            });
+        }
+    </script>
 </body>
 
 </html>
